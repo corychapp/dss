@@ -21,9 +21,8 @@ df = df.drop_duplicates()
 
 df.duplicated().sum()
 
-del df['index']
 
-df.reset_index(inplace=True)
+df.reset_index(drop=True, inplace=True)
 df
 
 # ---- Streamlit Material ----
