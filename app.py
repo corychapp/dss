@@ -28,7 +28,7 @@ df
 # ---- Streamlit Material ----
 
 # title at top of tab
-st.set_page_config(page_title="Data Science Salaries", layout='wide')
+
 
 # ---- Header ----
 
