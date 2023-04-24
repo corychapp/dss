@@ -23,7 +23,7 @@ df.duplicated().sum()
 
 
 df.reset_index(drop=True, inplace=True)
-df
+
 
 # ---- Streamlit Material ----
 
