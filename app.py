@@ -5,7 +5,7 @@ import plotly_express as px
 # ---- Jupyter Notebooks ----
 
 # Dataframe uploaded
-df = pd.read_csv('.notebooks/dss.csv')
+df = pd.read_csv('notebooks/dss.csv')
 
 # Dropped salary and salary_currency column because it was redundant material.
 df.drop(df[['salary','salary_currency']], axis = 1, inplace = True)
