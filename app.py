@@ -5,7 +5,7 @@ import plotly_express as px
 # ---- Jupyter Notebooks ----
 
 # Dataframe uploaded
-df = pd.read_csv('notebooks/dss.csv')
+df = pd.read_csv('.notebooks/dss.csv')
 
 # Dropped salary and salary_currency column because it was redundant material.
 df.drop(df[['salary','salary_currency']], axis = 1, inplace = True)
@@ -16,6 +16,15 @@ df['experience_level'] = df['experience_level'].replace('MI','Mid-level')
 df['experience_level'] = df['experience_level'].replace('SE','Senior-level')
 df['experience_level'] = df['experience_level'].replace('Ex','Executive-level')
 df['experience_level'] = df['experience_level'].replace('EX','Executive-level')
+
+df = df.drop_duplicates()
+
+df.duplicated().sum()
+
+del df['index']
+
+df.reset_index(inplace=True)
+df
 
 # ---- Streamlit Material ----
 
@@ -53,18 +62,19 @@ st.plotly_chart(hist1)
 # scatter plot 
 
 st.write( """
-#### Now let's find out the level/ percentage of Remote work, 
-based on experience level and work-time status
+#### Now let's find out how many people are within each job title, 
+based on experience level
 """)
 
-#Remote work- based on experience level and full-time, part-time, contractor, or freelance work
-list_for_scatter = ['salary_in_usd', 'remote_ratio','experience_level']
-choice_for_scatter = st.selectbox('Remote work dependency', list_for_scatter)
-scat1 = px.scatter(df, x='remote_ratio', y=choice_for_scatter, hover_data=['experience_level'])
+#- Job title based on experience level = ['salary_in_usd']
+#choice_for_scatter = st.selectbox('Remote work dependency', list_for_scatter)
+scat1 = px.scatter(df, x='job_title', hover_data=['experience_level', 'remote_ratio'])
 
 scat1.update_layout(
-title="<br> Remote vs {}</b>".format(choice_for_scatter))
+title="<br> Job Title VS </b>")
 st.plotly_chart(scat1)
+
+st.write("The scatter plot above showcases that as a position becomes more of a leadership role it gets more scarce. But you have alot of good opportunity as a basic role position!")
 
 # making data tables on same line
 left_column, right_column = st.columns(2)
