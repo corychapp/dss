@@ -95,11 +95,4 @@ strip = sns.stripplot(data=df_filtered, x='job_title', y='salary_in_usd', hue='e
 
 # Display the plot within a Streamlit app using st.pyplot()
 st.pyplot(strip)
-#In this example code, the experience level options are presented using a radio button widget instead of a checkbox. The default option is 'All', which selects all experience levels. The if statement filters the DataFrame based on the selected experience level, using 'Entry', 'Mid', 'Senior', and 'Executive' for the different levels.
-
-
-
-
-
-
-
+#In this example code, the experience level options are presented using a radio button widget instead of a checkbox. The default option is 'All', which selects all experience levels. The if statement filters the DataFrame based on the selectedexperience level, using 'Entry', 'Mid', 'Senior', and 'Executive' for the different levels
