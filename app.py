@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly_express as px
+import seaborn as sns
 
 # ---- Jupyter Notebooks ----
 
@@ -24,6 +25,8 @@ df.duplicated().sum()
 
 df.reset_index(drop=True, inplace=True)
 
+df.rename( columns={'Unnamed: 0':'index'}, inplace=True )
+
 
 # ---- Streamlit Material ----
 
@@ -39,43 +42,64 @@ with st.container():
 
 st.dataframe(df)
 
+# Define list of variables to display in dropdown
+#list_for_hist = ['experience_level', 'salary_in_usd']
 
-# will create histogram based on: experience level and salary
+# Create select box for experience level
+experience_level = st.selectbox('Select experience level', sorted(df['experience_level'].unique()))
 
-list_for_hist = ['experience_level', 'salary_in_usd']
+# Filter data by selected experience level
+filtered_hist_data = df[df['experience_level'] == experience_level]
 
-# create select box- interactive
-choice_for_hist = st.selectbox('Choose experience level', list_for_hist)
+# Create histogram with Plotly Express
+hist1 = px.histogram(filtered_hist_data, x='salary_in_usd', color='experience_level', color_discrete_map=   {'Entry-level':'purple',
+                                                                                                      'Mid-level':'blue',
+                                                                                                      'Senior-level':'red',
+                                                                                                      'Executive-level':'green'})
 
-# plotly histogram, where price is determined by choice in box
-hist1 = px.histogram(df, x= 'salary_in_usd', color='experience_level', color_discrete_map={'Entry-level':'purple',
-                                                                                          'Mid-level':'blue',
-                                                                                          'Senior-level':'red', 'Executive-level':'green'})
+# Add title
+hist1.update_layout(title="<b>Salary distribution for {} level</b>".format(experience_level))
 
-#add title
-hist1.update_layout(title="<b> Salary of level by {}</b>".format(choice_for_hist))
-
-#embed for streamlit
+# Embed in Streamlit
 st.plotly_chart(hist1)
 
-# scatter plot 
 
-st.write( """
-#### Now let's find out how many people are within each job title, 
-based on experience level
-""")
 
-#- Job title based on experience level = ['salary_in_usd']
-#choice_for_scatter = st.selectbox('Remote work dependency', list_for_scatter)
-scat1 = px.scatter(df, x='job_title', hover_data=['experience_level', 'remote_ratio'])
+# Define a list of all job titles
+all_job_titles = df['job_title'].unique().tolist()
 
-scat1.update_layout(
-title="<br> Job Title VS </b>")
-st.plotly_chart(scat1)
+# Define a default selection that includes all four job titles
+default_selection = ['Data Engineer', 'Data Analyst', 'Data Scientist', 'Machine Learning Engineer']
 
-st.write("The scatter plot above showcases that as a position becomes more of a leadership role it gets more scarce. But you have alot of good opportunity as a basic role position!")
+# Create a multiselect widget to select job titles
+selected_job_titles = st.multiselect('Select job titles', options=all_job_titles, default=default_selection)
 
-# making data tables on same line
-left_column, right_column = st.columns(2)
-left_column.plotly_chart(hist1, use_container_width=True)
-right_column.plotly_chart(scat1, use_container_width=True)
+# Create a radio button widget to select experience level
+experience_levels = ['All', 'Entry-Level', 'Mid-Level', 'Senior-Level', 'Executive-Level']
+selected_experience_level = st.radio('Select experience level', options=experience_levels, index=0)
+
+
+# Filter the DataFrame to only include the selected job titles and experience level
+df_filtered = df[df['job_title'].isin(selected_job_titles)]
+if selected_experience_level == 'Entry-Level':
+    df_filtered = df_filtered[df_filtered['experience_level'] == 'Entry']
+elif selected_experience_level == 'Mid-Level':
+    df_filtered = df_filtered[df_filtered['experience_level'] == 'Mid']
+elif selected_experience_level == 'Senior-Level':
+    df_filtered = df_filtered[df_filtered['experience_level'] == 'Senior']
+elif selected_experience_level == 'Executive-Level':
+    df_filtered = df_filtered[df_filtered['experience_level'] == 'Executive']
+
+# Create the stripplot using seaborn
+strip = sns.stripplot(data=df_filtered, x='job_title', y='salary_in_usd', hue='experience_level')
+
+# Display the plot within a Streamlit app using st.pyplot()
+st.pyplot(strip)
+#In this example code, the experience level options are presented using a radio button widget instead of a checkbox. The default option is 'All', which selects all experience levels. The if statement filters the DataFrame based on the selected experience level, using 'Entry', 'Mid', 'Senior', and 'Executive' for the different levels.
+
+
+
+
+
+
+
