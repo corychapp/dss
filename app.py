@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
 import plotly_express as px
-import seaborn as sns
+
 
 # ---- Jupyter Notebooks ----
 
@@ -73,26 +74,10 @@ default_selection = ['Data Engineer', 'Data Analyst', 'Data Scientist', 'Machine
 
 # Create a multiselect widget to select job titles
 selected_job_titles = st.multiselect('Select job titles', options=all_job_titles, default=default_selection)
-
-# Create a radio button widget to select experience level
-experience_levels = ['All', 'Entry-Level', 'Mid-Level', 'Senior-Level', 'Executive-Level']
-selected_experience_level = st.radio('Select experience level', options=experience_levels, index=0)
-
-
-# Filter the DataFrame to only include the selected job titles and experience level
 df_filtered = df[df['job_title'].isin(selected_job_titles)]
-if selected_experience_level == 'Entry-Level':
-    df_filtered = df_filtered[df_filtered['experience_level'] == 'Entry']
-elif selected_experience_level == 'Mid-Level':
-    df_filtered = df_filtered[df_filtered['experience_level'] == 'Mid']
-elif selected_experience_level == 'Senior-Level':
-    df_filtered = df_filtered[df_filtered['experience_level'] == 'Senior']
-elif selected_experience_level == 'Executive-Level':
-    df_filtered = df_filtered[df_filtered['experience_level'] == 'Executive']
+# Create a radio button widget to select experience level
 
-# Create the stripplot using seaborn
-strip = sns.stripplot(data=df_filtered, x='job_title', y='salary_in_usd', hue='experience_level')
+strip =  px.strip(data_frame=df_filtered, x='job_title', y='salary_in_usd', color='experience_level', color_discrete_map=   {'Entry-level':'purple', 'Mid-level':'blue', 'Senior-level':'red', 'Executive-level':'green'}) 
 
-# Display the plot within a Streamlit app using st.pyplot()
-st.pyplot(strip)
-#In this example code, the experience level options are presented using a radio button widget instead of a checkbox. The default option is 'All', which selects all experience levels. The if statement filters the DataFrame based on the selectedexperience level, using 'Entry', 'Mid', 'Senior', and 'Executive' for the different levels
+# Display the plot within a Streamlit app using st.pyplot():
+st.plotly_chart(strip)
